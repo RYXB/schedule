@@ -1,0 +1,80 @@
+# language: JSVM2
+
+/**
+ * @fileoverview js.io.File class {@link http://jsvm.homolo.com/}
+ * @file		File.jsc
+ * @author	Wan Changhua
+ * @version	2.01, 10/23/05
+ * @since		JSVM2.0
+ */
+
+package js.io;
+
+/**
+ * Create a new File instance.
+ * Inherit from JObject
+ * @author	Wan Changhua
+ * @version	2.01, 10/23/05
+ * @extends JObject
+ * @class this is a File class
+ * @constructor
+ * @return A new File instance
+ * @see JObject js.lang.JObject is the base class for this
+ */
+class File (path, type)
+{
+	/**
+	 * @private
+	 */
+	this.path = path;
+	
+	/**
+	 * @private
+	 */
+	this.type = type;
+	
+	/**
+	 * @private
+	 */
+	this.data = null;
+}
+
+/**
+ * Returns the file name.
+ * @return  a string for file name
+ * @type String
+ */
+File.prototype.getFileName = function()
+{
+	return (this.path == null) ? null 
+		: this.path.replace(/^(.*)[\/\\]/, "");
+}
+
+/**
+ * Returns the file full path.
+ * @return  a string for file full path
+ * @type String
+ */
+File.prototype.getPath = function()
+{
+	return this.path;
+}
+
+/**
+ * Returns the file content.
+ * @return  file content
+ * @type Variable
+ */
+File.prototype.read = function ()
+{
+	return this.data;
+}
+
+/**
+ * Sets the file content.
+ * @param {String} data a string or bytes
+ */
+File.prototype.write = function (data)
+{
+	this.data = data;
+}

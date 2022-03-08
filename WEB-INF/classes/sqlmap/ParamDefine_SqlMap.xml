@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ParamDefine">
+  <!-- 任务计划维护 -->
+  <select id="getTaskPlanList" resultClass="java.util.LinkedHashMap"  parameterClass="java.util.Map">
+   <![CDATA[ 
+    SELECT A.TASKID,B.TASKNAME,  A.DESCRIBE, A.TRIGGERRULE1,  A.EXCEPTIVERULE, A.STATE, A.BATCHDATERULE, to_char(A.NEXTTRIGGERDATE,'yyyy-MM-dd HH24:mi:ss') NEXTTRIGGERDATE , A.NEXTBATCHDATE,A.ERRMSG FROM SCH_TASKPLAN A ,SCH_TASKINFO B WHERE A.TASKID=B.TASKID  AND A.TASKID  like '%$taskId$%'  AND B.TASKNAME like '%$taskName$%'  AND A.STATE  like '%$status$%' 
+    ]]>
+  </select> 
+  
+  <select id="getTaskNameList" resultClass="java.util.LinkedHashMap" >
+   <![CDATA[ 
+     SELECT TASKID, TASKNAME FROM SCH_TASKINFO
+    ]]>
+  </select> 
+  <select id="getTaskPlanListFlag" resultClass="java.lang.String"  parameterClass="java.util.Map" >
+      <![CDATA[ 
+        SELECT COUNT(1) FROM SCH_TASKPLAN T WHERE T.TASKID=#taskId# 
+      ]]>
+  </select> 
+    <delete id="deleteTaskPlan" parameterClass="java.util.Map">
+      DELETE SCH_TASKPLAN WHERE TASKID =#taskId# 
+    </delete>  
+     <update id="updateTaskPlan" parameterClass="com.vanceinfo.schedule.framework.taskPlan.service.TaskPlanBean">
+        UPDATE SCH_TASKPLAN SET DESCRIBE =#describe#, TRIGGERRULE1 = #triggerRule1#, TRIGGERRULE2 = #triggerRule2#, TRIGGERRULE3 = #triggerRule3#, EXCEPTIVERULE = #exceptiveRule#, STATE = #state#, BATCHDATERULE = #batchDateRule#,RELOADFLAG='1' WHERE TASKID = #taskId# 
+    </update> 
+     <!--插入任务信息  -->
+    <insert id="insertTaskPlan"   parameterClass="com.vanceinfo.schedule.framework.taskPlan.service.TaskPlanBean" >
+       INSERT INTO SCH_TASKPLAN (TASKID, DESCRIBE, TRIGGERRULE1, TRIGGERRULE2, TRIGGERRULE3, EXCEPTIVERULE, STATE, BATCHDATERULE,RELOADFLAG)VALUES(#taskId#, #describe#, #triggerRule1#, #triggerRule2#, #triggerRule3#, #exceptiveRule#, #state#, #batchDateRule#, '1') 
+    </insert>
+    
+    <!-- 事件依赖关系维护 -->
+  <select id="getEventDependentRuleList" resultClass="java.util.LinkedHashMap"  parameterClass="java.util.Map">
+   <![CDATA[ 
+    SELECT A.TASKID,B.DESCRIBE,B.TASKNAME,A.EVENTID,A.EVENTTYPE,A.EVENTTYPE, DATEOFFSET,A.STATE FROM SCH_EVENTDEPENDENTRULE A,SCH_TASKINFO B WHERE A.TASKID=B.TASKID  AND A.TASKID  like '%$taskid$%'  AND B.TASKNAME like '%$taskName$%' ORDER BY A.TASKID, A.EVENTTYPE DESC 
+    ]]>
+  </select> 
+  <select id="getEventSequenceList" resultClass="java.util.LinkedHashMap"  parameterClass="java.util.Map">
+   <!-- 事件序列列表 -->
+   <![CDATA[ 
+   SELECT to_char(A.EVENTDATE,'yyyy-MM-dd HH24:mi:ss') EVENTDATE, A.EVENTID,A.EVENTTYPE,  A.BATCHDATE FROM SCH_EVENTSEQUENCE A WHERE 1=1 AND A.EVENTID  like '%$eventid$%'   AND A.EVENTTYPE like '%$eventtype$%'   ORDER BY A.EVENTDATE DESC
+     ]]>
+  </select> 
+  <select id="getEventDependentRuleListFlag" resultClass="java.lang.String"  parameterClass="java.util.Map" >
+      <![CDATA[ 
+        SELECT COUNT(1) FROM sch_eventdependentrule T WHERE taskid =#taskid# and eventid = #eventid# and eventtype = #eventtype# 
+      ]]>
+  </select> 
+    <delete id="deleteEventDependentRule" parameterClass="java.util.Map">
+      delete sch_eventdependentrule where taskid =#taskid# and eventid = #eventid# and eventtype = #eventtype# 
+    </delete>  
+     <update id="updateEventDependentRule" parameterClass="com.vanceinfo.schedule.framework.event.service.EventBean">
+        UPDATE SCH_EVENTDEPENDENTRULE SET DATEOFFSET = #dateOffset#,STATE =#state# WHERE TASKID =#taskId# AND EVENTID =#eventId# AND EVENTTYPE =#eventType# 
+    </update> 
+     <!--插入任务信息  --> 
+    <insert id="insertEventDependentRule"   parameterClass="com.vanceinfo.schedule.framework.event.service.EventBean" >
+       INSERT INTO SCH_EVENTDEPENDENTRULE VALUES(#taskId#, #eventId#, #eventType#, #dateOffset#, #state#) 
+    </insert>
+    <select id="getTaskName" resultClass="java.lang.String"  parameterClass="java.util.Map" >
+      <![CDATA[ 
+    SELECT TASKNAME FROM SCH_TASKINFO WHERE TASKID= #taskId#
+     ]]>
+  </select>
+   <select id="getSubTreeUpInfoList" resultClass="java.util.LinkedHashMap"  parameterClass="java.util.Map" >
+      <![CDATA[ 
+     SELECT A.JOBID,A.DEPENDENTJOBID,A.TASKID,B.TASKNAME FROM SCH_JOBDEPENDENCES A ,SCH_TASKINFO B WHERE A.TASKID=B.TASKID AND A.TASKID =#taskId# AND A.JOBID=#jobId#
+     ]]>
+  </select>
+  
+  <select id="getSubTreeInfoList" resultClass="java.util.LinkedHashMap"  parameterClass="java.util.Map" >
+      <![CDATA[ 
+    SELECT A.JOBID,A.DEPENDENTJOBID,A.TASKID,B.TASKNAME FROM SCH_JOBDEPENDENCES A ,SCH_TASKINFO B WHERE A.TASKID=B.TASKID AND  A.TASKID =#taskId# AND A.DEPENDENTJOBID=#jobId#
+     ]]>
+  </select>
+  
+  <select id="getTreeInfo" resultClass="java.util.Map"  parameterClass="java.util.Map" >
+      <![CDATA[ 
+     SELECT A.JOBID,A.DEPENDENTJOBID,A.TASKID,B.TASKNAME FROM SCH_JOBDEPENDENCES A ,SCH_TASKINFO B WHERE A.TASKID=B.TASKID AND A.TASKID =#taskId#  AND  A.DEPENDENTJOBID=#jobId# 
+     ]]>
+  </select>
+</sqlMap>

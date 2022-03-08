@@ -1,0 +1,197 @@
+.tableTop
+{
+    BORDER-RIGHT: black 1pt;
+    BORDER-TOP: black 1pt;
+    BORDER-LEFT: black 1pt;
+    BORDER-BOTTOM: black 1pt solid;
+    BACKGROUND-COLOR: whitesmoke
+    width: 100%;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	margin-left: auto;
+	height: 24px;
+}
+.tableMiddle {
+	text-align: center;
+	border: 0px;
+	width: 100%;
+	height: 280px;
+ }
+.tableMiddle1 {
+	text-align: center;
+	border: 0px;
+	width: 100%;
+ }
+ .tableIn {
+	text-align: center;
+	width: 85%;
+ }
+.tableBottom {
+	text-align: center;
+	margin: 0px;
+	width: 100%;
+	border: 0px;
+	height: 46;
+}
+.commonTable{
+	WIDTH: 100%;
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+	text-align: center;
+	background-color: #FFFFFF;
+}
+.bodyLeft
+{
+    text-align: center;
+    BACKGROUND-COLOR: F2F2F2;
+    height: 19;
+}
+.bodyRight
+{
+    text-align: left;
+    BACKGROUND-COLOR: white;
+    height: 19;
+}
+.bodyTop
+{
+    text-align: center;
+    BACKGROUND-COLOR: F2F2F2;
+    height: 19;
+}
+.bodyList
+{
+    text-align: center;
+    BACKGROUND-COLOR: white;
+    height: 19;
+}
+.mainTitle {
+	font-weight: 700;
+	font-size: 18pt;
+	color: black;
+	font-family: "华文楷体";
+	vertical-align: middle;
+}
+.title
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 14px;
+    COLOR: #990000;
+    LINE-HEIGHT: 150%;
+    FONT-FAMILY: "宋体";
+    BACKGROUND-COLOR: white
+}
+.remark {
+	FONT-SIZE: 12px;
+	FONT-FAMILY: "宋体";
+	color: #777779;
+	font-weight: bold;
+}
+.button
+{
+    BORDER-RIGHT: 2px outset;
+    BACKGROUND-POSITION: center center;
+    BORDER-TOP: 2px outset;
+    FONT-SIZE: 12px;
+    BORDER-LEFT: 2px outset;
+    BORDER-BOTTOM: 2px outset;
+    BACKGROUND-COLOR: #e3e4e3;
+    TEXT-DECORATION: none
+}
+.comments
+{
+    FONT-SIZE: 10px;
+    FONT-FAMILY: "宋体";
+}
+
+
+A:link
+{
+    FONT-WEIGHT: 500;
+	FONT-SIZE: 12px;
+    COLOR: #000066
+}
+A:visited
+{
+    FONT-WEIGHT: 500;
+    FONT-SIZE: 12px;
+    COLOR: #000066
+}
+A:hover
+{
+    FONT-WEIGHT: 500;
+	FONT-SIZE: 12px;
+    COLOR: #3362E9;
+}
+A:active {
+    FONT-WEIGHT: 500;
+	FONT-SIZE: 12px;
+    COLOR: #BC0021;
+}
+P
+{
+    FONT-SIZE: 9pt;
+    LINE-HEIGHT: 150%;
+    FONT-FAMILY: "宋体"
+}
+BODY
+{
+	FONT-SIZE: 12px;
+	COLOR: #000066;
+	FONT-FAMILY: 宋体;
+	BACKGROUND-COLOR: white;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: auto;
+	margin-left: auto;
+}
+TD
+{
+    FONT-WEIGHT: 500;
+    FONT-SIZE: 12px;
+    COLOR: #000066;
+    FONT-FAMILY: 宋体;
+}
+INPUT
+{
+    BORDER-RIGHT: gainsboro 1px inset;
+    BORDER-TOP: gainsboro 1px inset;
+    FONT-WEIGHT: 500;
+    FONT-SIZE: 12px;
+    BORDER-LEFT: gainsboro 1px inset;
+    COLOR: #000066;
+    BORDER-BOTTOM: gainsboro 1px inset;
+	list-style-type: none;
+	list-style-position: inside;
+}
+
+.Navigator
+{
+color: #f2f2f2;
+}
+.Navigator-Hidden
+{
+display:none;
+}
+.naviBar{
+	align:center;
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif"; 
+	font-size: 10pt; 
+	color: #334d55; 
+	text-align: left; 
+}
+.naviDisabled { 
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif"; 
+	font-size: 10pt; 
+	color: #334d55; 
+	text-align: left; 
+}
+.naviEnabled { 
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 10pt; 
+	color: #334d55; 
+	text-align: left;
+	text-decoration:underline;
+	cursor: hand;
+}

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="UserDefine">
+  <!-- 任务计划维护 -->
+  <select id="getUserInfoList" resultClass="java.util.LinkedHashMap"  parameterClass="java.util.Map">
+   <![CDATA[ 
+    select user_name, user_sex, user_no, user_id, user_department, user_phone, user_status, user_starttime, to_char(user_modifytime,'yyyyMMdd HH:mm:ss') user_modifytime, user_password from sch_userinfo where 1=1  and  user_name like '%$userName$%'  and  user_id like '%$userId$%' 
+    ]]>
+  </select> 
+    
+  <select id="getUserStatusFlag" resultClass="java.lang.String"  parameterClass="java.util.Map" >
+      <![CDATA[ 
+        Select user_status from SCH_USERINFO where user_password=#userPassword# and user_id=#userId#
+      ]]>
+  </select> 
+  <select id="getUserMaxId" resultClass="java.lang.String"  parameterClass="java.util.Map" >
+      <![CDATA[ 
+        select TO_CHAR(max(user_no) + 1) from sch_userinfo
+      ]]>
+  </select> 
+  <select id="getUserBeanFlag" resultClass="java.lang.String"  parameterClass="java.util.Map" >
+      <![CDATA[
+        select count(1) from sch_userinfo where 1=1 and user_id=#userId#
+      ]]>
+  </select> 
+     <delete id="deleteUserInfo" parameterClass="java.util.Map">
+      delete from sch_userinfo where user_no=#userNo# 
+    </delete>
+    
+     <update id="updateUserPassword" parameterClass="java.util.Map">
+       update sch_userinfo set user_password=#userPassword# ,user_modifytime=sysdate where user_no=#userNo#
+    </update>   
+     <update id="updateUserInfo" parameterClass="com.vanceinfo.schedule.framework.login.service.UserBean">
+       update sch_userinfo set user_name=#userName#, user_sex=#userSex#, user_id=#userId#, user_department=#userDepartment#, user_phone=#userPhone#, user_status=#userStatus# ,user_password=#userPassword#,user_modifytime=sysdate where user_no=#userNo#
+    </update> 
+     <!--插入任务信息  -->
+    <insert id="insertUserInfo"   parameterClass="com.vanceinfo.schedule.framework.login.service.UserBean" >
+       insert into sch_userinfo (user_name, user_sex, user_no, user_id, user_department, user_phone, user_status, user_starttime, user_modifytime, user_password)
+        values (#userName#,#userSex#,#userNo#,#userId#,#userDepartment#,#userPhone#,#userStatus#,#userStartTime# ,sysdate,#userPassword#) 
+    </insert>
+    <select id="getUserTableSpaceList" resultClass="java.lang.String"  parameterClass="java.util.Map" >
+      <![CDATA[
+        SELECT UPPER(F.TABLESPACE_NAME) TABLE_ID, D.TOT_GROOTTE_MB TABLE_VOLUME,D.TOT_GROOTTE_MB - F.TOTAL_BYTES TABLE_USE_VOLUME,TO_CHAR(ROUND((D.TOT_GROOTTE_MB - F.TOTAL_BYTES) / D.TOT_GROOTTE_MB * 100,2),'990.99') || '%' TABLE_USE_RODIO, F.TOTAL_BYTES TABLE_UNUSE,F.MAX_BYTES TABLE_BIG_UNUSE FROM (SELECT TABLESPACE_NAME, ROUND(SUM(BYTES) / (1024 * 1024), 2) TOTAL_BYTES, ROUND(MAX(BYTES) / (1024 * 1024), 2) MAX_BYTES FROM SYS.DBA_FREE_SPACE GROUP BY TABLESPACE_NAME) F,
+              (SELECT DD.TABLESPACE_NAME, ROUND(SUM(DD.BYTES) / (1024 * 1024), 2) TOT_GROOTTE_MB FROM SYS.DBA_DATA_FILES DD GROUP BY DD.TABLESPACE_NAME) D  WHERE D.TABLESPACE_NAME = F.TABLESPACE_NAME  AND F.TABLESPACE_NAME like '%$tableSpaceName$%'   ORDER BY 1
+    ]]>
+  </select>           
+</sqlMap>

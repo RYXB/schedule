@@ -1,0 +1,74 @@
+# language: JSVM2
+
+/**
+ * @fileoverview js.net.XmlHttp class {@link http://jsvm.homolo.com/}
+ * @file		XmlHttp.jsc
+ * @author	Wan Changhua
+ * @version	2.01, 10/23/05
+ * @since		JSVM2.0
+ */
+
+package js.net;
+
+import js.lang.NotSupportException;
+import js.lang.System;
+
+/**
+ * Create a new XmlHttp instance.
+ * Inherit from js.lang.JObject
+ * @author	Wan Changhua
+ * @version	2.01, 10/23/05
+ * @extends JObject
+ * @class This is the xmlhttp utility class.
+ * @constructor
+ * @throws NotSupportException if current browser does not support XmlHttp/XMLHttpRequest.
+ * @return  a <code>XMLHttpRequest</code> instance if the current browser is moz.
+ *          a <code>Microsoft.XMLHTTP</code> instance otherwise.
+ */
+class XmlHttp()
+{
+	if (js.lang.System.isMozBrowser())
+	{
+		return new XMLHttpRequest();
+	}
+	else
+	{
+		if (progId != null)
+		{
+			return new ActiveXObject(progId);
+		}
+		for (var i = 0; i < progIds.length; i++)
+		{
+			try
+			{
+				var obj = new ActiveXObject(progIds[i]);
+				progId = progIds[i];
+				return obj;
+			}
+			catch (ex) { }
+		}
+	}
+	throw new js.lang.NotSupportException(
+		"Can't create xmlhttp object under '"
+		+ System.getPlatform()	+ "'!");
+}
+
+
+/**
+ * Retrieves a new XmlHttp instance.
+ * @return  a <code>Microsoft.XMLHTTP</code> instance if the current browser is ie5.
+ *          a <code>XmlHttp</code> instance otherwise.
+ * @type XmlHttp
+ */
+XmlHttp.create = function ()
+{
+	return (System.getPlatform() == "ie5") ?
+		new ActiveXObject("Microsoft.XMLHTTP") : new XmlHttp();
+}
+
+/**
+ * @private
+ */
+var progIds = ["MSXML2.XMLHTTP", "Microsoft.XMLHTTP", "MSXML.XMLHTTP", "MSXML3.XMLHTTP"];
+var progId = null;
+

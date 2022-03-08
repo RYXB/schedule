@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+     
+    <!-- 以下为两种连接数据库方式：服务器的jndi.xml方法和通过代码的直连接方法 --> 
+    
+    <!--获取由应用服务器提供的DataSource的组件
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+    	<property name="jndiName"><value>${dataSource.jndiName}</value></property>
+    </bean>
+    --> 
+       	<!-- 配置数据库连接池，使用dbcp
+   	initialSize 连接池启动时的初始值
+   	maxActive	连接池的最大值
+   	maxIdle     最大空闲值.当经过一个高峰时间后,连接池可以慢慢将已经用不到的连接慢慢释放一部分，一直减少到maxIdle为止
+   	minIdle     最小空闲值.当空闲的连接数少于阀值时,连接池就会预申请去一些连接，以免洪峰来时来不及申请
+ 	 --> 
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName"><value>${oraJdbc.driverClassName}</value></property>
+		<property name="url"><value>${oraJdbc.url}</value></property>
+		<property name="username"><value>${oraJdbc.username}</value></property>
+		<property name="password"><value>${oraJdbc.password}</value></property>
+		<property name="initialSize" value="5" />
+		<property name="maxActive" value="15" />
+		<property name="maxIdle" value="10" />
+		<property name="minIdle" value="5" />
+	</bean>
+  	
+  
+	<!--数据库直连方式	 
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" lazy-init="true" >
+		<property name="driverClassName"><value>${oraJdbc.driverClassName}</value></property>
+		<property name="url"><value>${oraJdbc.url}</value></property>
+		<property name="username"><value>${oraJdbc.username}</value></property>
+		<property name="password"><value>${oraJdbc.password}</value></property>
+	</bean> 
+	-->
+	<!--事务管理器-->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
+		<property name="dataSource"><ref local="dataSource"></ref></property>
+	</bean>
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource"> <ref bean="dataSource" /></property>
+	</bean>
+ 
+	<bean id="baseTransactionProxy" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" abstract="true">
+		<property name="transactionManager"><ref bean="transactionManager"/></property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="del*">PROPAGATION_REQUIRED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="add*">PROPAGATION_REQUIRED</prop>
+				<prop key="remove*">PROPAGATION_REQUIRED</prop>
+				<prop key="register*">PROPAGATION_REQUIRED</prop>
+				<prop key="insert*">PROPAGATION_REQUIRED</prop>
+				<prop key="batchAdd*">PROPAGATION_REQUIRED</prop>
+				<prop key="batchDel*">PROPAGATION_REQUIRED</prop>
+				<prop key="import*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<!--iBatis SqlMap组件  -->
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation"><value>/WEB-INF/appconfig/sqlmap-config.xml</value></property>
+		<property name="dataSource"><ref local="dataSource"/></property>
+	</bean>
+	  
+   <bean name="taskMonitorDao" class="com.vanceinfo.schedule.framework.taskMonitor.dao.TaskMonitorDaoImpl">
+     	<property name="sqlMapClient"><ref bean="sqlMapClient"/></property>	
+   </bean>
+   
+   <bean name="hisTaskMonitorDao" class="com.vanceinfo.schedule.framework.hisTaskMonitor.dao.HisTaskMonitorDaoImpl">
+     	<property name="sqlMapClient"><ref bean="sqlMapClient"/></property>	
+   </bean>
+   
+   <bean name="taskFoundDao" class="com.vanceinfo.schedule.framework.taskFound.dao.TaskFoundDaoImpl">
+     	<property name="sqlMapClient"><ref bean="sqlMapClient"/></property>	
+   </bean>
+   
+   <bean name="newTaskDao" class="com.vanceinfo.schedule.framework.newTaskInfo.dao.NewTaskDaoImpl">
+     	<property name="sqlMapClient"><ref bean="sqlMapClient"/></property>	
+   </bean>
+   
+   <bean name="newJobInfoDao" class="com.vanceinfo.schedule.framework.newJobInfo.dao.NewJobInfoDaoImpl">
+     	<property name="sqlMapClient"><ref bean="sqlMapClient"/></property>	
+   </bean>
+   
+   <bean name="userLoginDao" class="com.vanceinfo.schedule.framework.login.dao.UserLoginDaoImpl">
+     	<property name="sqlMapClient"><ref bean="sqlMapClient"/></property>	
+   </bean>
+   
+   <bean name="handleTreeDao" class="com.vanceinfo.schedule.framework.dependent.dao.HandleTreeDaoImpl">
+     	<property name="sqlMapClient"><ref bean="sqlMapClient"/></property>	
+   </bean>
+   
+   <bean name="importInfoDao" class="com.vanceinfo.schedule.framework.dataImport.dao.ImportInfoDaoImpl">
+     	<property name="sqlMapClient"><ref bean="sqlMapClient"/></property>	
+   </bean>
+   
+   <bean name="eventDao" class="com.vanceinfo.schedule.framework.event.dao.EventDaoImpl">
+     	<property name="sqlMapClient"><ref bean="sqlMapClient"/></property>	
+   </bean>
+   
+   <bean name="taskPalnDao" class="com.vanceinfo.schedule.framework.taskPlan.dao.TaskPalnDaoImpl">
+     	<property name="sqlMapClient"><ref bean="sqlMapClient"/></property>	
+   </bean>
+   
+   <bean name="menuTreeDao" class="com.vanceinfo.schedule.framework.organ.dao.MenuTreeDaoImpl" >
+     	<property name="sqlMapClient"><ref bean="sqlMapClient"/></property>	
+   </bean>
+   
+</beans>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+ 
+	<settings cacheModelsEnabled="true" useStatementNamespaces="true"/>
+
+	<typeHandler javaType="java.lang.String" jdbcType="CLOB"
+		callback="com.ibatis.sqlmap.engine.type.ClobTypeHandlerCallback"/>
+
+	<sqlMap resource="/sqlmap/Test_Conn_SqlMap.xml"/>
+	<sqlMap resource="/sqlmap/TaskMonitor_SqlMap.xml"/>
+	<sqlMap resource="/sqlmap/HisTaskMonitor_SqlMap.xml"/>
+    <sqlMap resource="/sqlmap/ParamDefine_SqlMap.xml"/>
+    <sqlMap resource="/sqlmap/User_SqlMap.xml"/>
+</sqlMapConfig>

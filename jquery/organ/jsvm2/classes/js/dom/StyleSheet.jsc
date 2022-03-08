@@ -1,0 +1,120 @@
+# language: JSVM2
+
+/**
+ * @fileoverview js.dom.StyleSheet class {@link http://jsvm.homolo.com/}
+ * @file		StyleSheet.jsc
+ * @author	Wan Changhua
+ * @version	2.01, 10/23/05
+ * @since		JSVM2.0
+ */
+
+package js.dom;
+
+import js.lang.System;
+import js.lang.BObject;
+
+/**
+ * Create a new js.dom.StyleSheet instance.
+ * Inherit from BObject
+ * @author	Wan Changhua
+ * @version	2.01, 10/23/05
+ * @extends BObject
+ * @class This is the StyleSheet class.  
+ * @constructor
+ * @param <Object> cs
+ * @return A new StyleSheet object
+ */
+
+class StyleSheet extends BObject (cs)
+{
+	/**
+	 * @private
+	 */
+	this.styleSheet = cs;
+}
+
+/**
+ * Creates a new style rule for the styleSheet object, 
+ * and returns the index into the rules collection.
+ * @param <String> sSelector that specifies the selector for the new rule.
+ *				Single contextual selectors are valid
+ * @param <String> sStyle that specifies the style assignments for this style rule. 
+ *				This style takes the same form as an inline style specification. 
+ *				For example, "color:blue" is a valid style parameter.
+ * @param <int> iIndex Integer that specifies the location in the rules collection to add the new style rule. 
+ *				If an index is not provided, the rule is added to the end of the collection by default.
+ */
+StyleSheet.prototype.addRule = function (sSelector, sStyle , iIndex)
+{
+	if (iIndex == null)
+	{
+		iIndex = (js.lang.System.isIeBrowser()) ? this.styleSheet.rules.length
+			: this.styleSheet.cssRules.length;
+	}
+	if (js.lang.System.isIeBrowser())
+	{
+		this.styleSheet.addRule(sSelector, sStyle , iIndex);
+	}
+	if (js.lang.System.isMozBrowser())
+	{
+		this.styleSheet.insertRule(sSelector + " { " + sStyle + "} ", iIndex);
+	}
+}
+
+/**
+ * Deletes an existing style rule for the styleSheet object,
+ * and adjusts the index of the rules collection accordingly. 
+ * @param <int> iIndex Integer that specifies the index value of the rule to be deleted from the style sheet.
+ *				If an index is not provided, the first rule in the rules collection is removed.
+ */
+StyleSheet.prototype.removeRule = function(iIndex)
+{
+	if (js.lang.System.isIeBrowser())
+	{
+		this.styleSheet.removeRule(iIndex);
+	}
+	if (js.lang.System.isMozBrowser())
+	{
+		this.styleSheet.deleteRule(iIndex);
+	}
+}
+
+/**
+ * Creates a new StyleSheet object
+ * @param <Document> doc Document that specifies the document object of the StyleSheet to be created on the document.
+ *				default is current document.
+ * @returns a new StyleSheet object
+ * @type StyleSheet
+ */
+StyleSheet.create = function (doc)
+{
+	doc = doc || document;
+	var element = doc.createElement("style");
+	doc.getElementsByTagName("HEAD")[0].appendChild(element);
+	var len = doc.styleSheets.length;
+	return new StyleSheet(doc.styleSheets.item(len - 1));
+}
+
+/**
+ * Creates a new StyleSheet object and adds css link file for it.
+ * @param <String> url the url of the css file
+ * @param <Document> doc The document that the style sheet apply it.
+ * @returns a new StyleSheet object
+ * @type StyleSheet
+ */
+StyleSheet.addCssLink = function (url, doc)
+{
+	doc = doc || document;
+	if (System.isIeBrowser())
+	{
+		return doc.createStyleSheet(url);
+	}
+	else
+	{
+		var elmt = doc.createElement("link");
+		doc.getElementsByTagName("HEAD")[0].appendChild(elmt);
+		elmt.setAttribute("rel", "stylesheet");
+		elmt.setAttribute("href", url);
+		return elmt;
+	}
+}

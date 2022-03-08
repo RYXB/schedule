@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	<!--应用程序属性配置组件，在指定位置定义的属性，可以以占位符的方式应用在组件配置文件中-->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>/WEB-INF/appconfig/application.properties</value>
+                <value>classpath*:config/appconfig/app.properties</value>
+            </list>
+        </property>
+	</bean>
+ 
+   <!--应用程序组件静态获取器 -->
+   <bean name="componentStaticRetriever" class="com.vanceinfo.schedule.framework.util.ContextUtil"></bean>
+
+   <bean id="textDictFactory" class="com.vanceinfo.schedule.framework.dictionary.TextDictFactory" init-method="init"/>
+   
+   <bean id="pagedListOnDemandHolder" class="com.vanceinfo.schedule.framework.util.PagedListOnDemandHolder" >
+   		<property name="pageSize"><value>${schedule.pageSize}</value></property>	
+   </bean>
+   
+   <bean name="taskMonitorService" class="com.vanceinfo.schedule.framework.taskMonitor.service.TaskMonitorServiceImpl">
+     <property name="taskMonitorDao"><ref bean="taskMonitorDao"/></property>
+     <property name="pageRefreshTim"><value>${pageRefresh.time}</value></property>	
+   </bean>
+   
+   <bean name="hisTaskMonitorService" class="com.vanceinfo.schedule.framework.hisTaskMonitor.service.HisTaskMonitorServiceImpl">
+     <property name="hisTaskMonitorDao"><ref bean="hisTaskMonitorDao"/></property>
+   </bean> 
+   
+   <bean name="taskFoundService"  class="com.vanceinfo.schedule.framework.taskFound.service.TaskFoundServiceImpl" >
+	 	<property name="taskFoundDao"><ref bean="taskFoundDao"/></property>	
+	 	<property name="taskMonitorDao"><ref bean="taskMonitorDao"/></property>
+	 	<property name="pageRefreshTim"><value>${pageRefresh.time}</value></property>
+	</bean>
+	
+    <bean name="newTaskService"  class="com.vanceinfo.schedule.framework.newTaskInfo.service.NewTaskServiceImpl" >
+	 	<property name="newTaskDao"><ref bean="newTaskDao"/></property>	
+	</bean>
+	
+    <bean name="newJobInfoService"  class="com.vanceinfo.schedule.framework.newJobInfo.service.NewJobInfoServiceImpl" >
+	 	<property name="newJobInfoDao"><ref bean="newJobInfoDao"/></property>	
+	</bean>
+	
+    <bean name="treeBOByCode"  class="com.vanceinfo.schedule.framework.dependent.service.TreeBOByCodeImpl" >
+	 	<property name="handleTreeDao"><ref bean="handleTreeDao"/></property>	
+	</bean>
+		
+    <bean name="importInfoService"  class="com.vanceinfo.schedule.framework.dataImport.service.ImportInfoServiceImpl" >
+	 	<property name="importInfoDao"><ref bean="importInfoDao"/></property>	
+	 	<property name="logFilePath"><value>${logFilePath.Log}</value></property>
+	</bean>
+	
+    <bean name="eventService"  class="com.vanceinfo.schedule.framework.event.service.EventServiceImpl" >
+	 	<property name="eventDao"><ref bean="eventDao"/></property>	
+	</bean>
+	
+    <bean name="taskPlanService"  class="com.vanceinfo.schedule.framework.taskPlan.service.TaskPlanServiceImpl" >
+	 	<property name="taskPalnDao"><ref bean="taskPalnDao"/></property>	
+	</bean>
+	
+    <bean name="menuTreeService"  class="com.vanceinfo.schedule.framework.organ.service.MenuTreeServiceImpl" >
+	 	<property name="menuTreeDao"><ref bean="menuTreeDao"/></property>	
+	</bean>
+    
+     <bean name="userLoginService"  class="com.vanceinfo.schedule.framework.login.service.UserLoginServiceImpl" >
+	    <property name="userLoginDao"><ref bean="userLoginDao"/></property>	 
+	 </bean>
+    <bean name="tableDataExportService"  class="com.vanceinfo.schedule.framework.dataExport.service.TableDataExportServiceImpl" >
+	    <property name="jdbcTemplate"><ref bean="jdbcTemplate"/></property>	
+	</bean>
+</beans>

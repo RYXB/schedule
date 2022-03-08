@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Test_Conn">
+
+  <select id="select_tab" resultClass="java.util.LinkedHashMap" parameterClass="java.lang.String">
+<![CDATA[ 
+    select 
+     tname,tabtype
+    from tab
+    where rownum < 10
+]]>
+
+  </select>
+  
+</sqlMap>

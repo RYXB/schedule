@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="TaskMonitor">
+
+  <select id="getTaskStatus" resultClass="java.util.LinkedHashMap" >
+   <![CDATA[ 
+    SELECT CODE ,NAME VALUE FROM DIC_STATUS WHERE FLAG = 'STATUS'
+    ]]>
+  </select>
+  <select id="getJobStatus" resultClass="java.util.LinkedHashMap" >
+   <![CDATA[ 
+    SELECT d.CODE, d.NAME VALUE FROM DIC_STATUS d WHERE d.FLAG = 'JOBSTATUS' 
+    ]]>
+  </select>
+  
+   <!-- 任务运行方式 -->
+   <select id="getTaskRunmode" resultClass="java.util.LinkedHashMap" >
+   <![CDATA[ 
+    SELECT CODE ,NAME  VALUE FROM DIC_STATUS WHERE FLAG = 'RUNMODE'
+    ]]>
+  </select>
+  <!-- 作业运行方式 -->
+   <select id="getJobRunmode" resultClass="java.util.LinkedHashMap" >
+   <![CDATA[ 
+   SELECT CODE ,NAME  VALUE FROM DIC_STATUS WHERE FLAG = 'RUNMODE' and code!=1
+    ]]>
+  </select>
+  
+  <select id="getTaskBatchdate" resultClass="java.util.LinkedHashMap" >
+   <![CDATA[ 
+    SELECT A.BATCHDATE CODE ,TO_CHAR(TO_DATE(A.BATCHDATE,'YYYYMMDD'),'YYYY"年"MM"月"DD"日"') AS VALUE   FROM SCH_SCHDULECONTROL A
+    ]]>
+  </select> 
+   <!-- 获取任务配置的作业 -->
+   <select id="getTaskJobList" resultClass="java.util.LinkedHashMap"  parameterClass="java.util.Map">
+   <![CDATA[ 
+    select JOBID,JOBTYPE,DESCRIBE FROM sch_jobconfig WHERE TASKID =#taskid#   AND JOBID  like '%$jobid$%'
+  AND  JOBTYPE like  '%$jobtype$%'
+  ]]>
+  </select> 
+    <!--任务运行监控子作业列表list  -->
+    <select id="getSunJobList" resultClass="java.util.LinkedHashMap"  parameterClass="java.util.Map">
+   <![CDATA[ 
+    SELECT A.TASKID,
+       B.TASKNAME,
+       A.JOBID,
+       A.CHILDJOBID,
+       A.BATCHDATE,
+       C.JOBTYPE,
+       C.DESCRIBE,
+       A.STATUS,
+       to_char(A.STARTTIME,'yyyy-MM-dd HH24:mi:ss') STARTTIME, to_char(A.ENDTIME ,'yyyy-MM-dd HH24:mi:ss') ENDTIME,
+       A.ERRMSG,
+       FLOOR((A.ENDTIME - A.STARTTIME) * 60 * 24) RUNMINUE,
+       CAST(((A.ENDTIME - A.STARTTIME) * 60 * 24 -
+            FLOOR((A.ENDTIME - A.STARTTIME) * 60 * 24)) * 60 AS VARCHAR2(2)) AS RUNSECOND
+  FROM SCH_TASKCHILDSTATUS A, SCH_TASKINFO B, SCH_JOBCONFIG C
+ WHERE A.TASKID = B.TASKID
+   AND A.TASKID = C.TASKID
+   AND A.JOBID = C.JOBID
+   AND A.TASKID = #taskId#  
+   AND A.JOBID = #jobId#  
+   AND A.BATCHDATE =#batchdate#
+   AND A.CHILDJOBID LIKE #childjobid#
+   AND A.STATUS LIKE #status#
+ ORDER BY DECODE(A.STATUS,
+                 '1',
+                 '1',
+                 '3',
+                 '2',
+                 '2',
+                 '3',
+                 '5',
+                 '3',
+                 '0',
+                 '4',
+                 '9'),
+          A.STARTTIME DESC
+       ]]>
+  </select>
+  <select id="getTaskName" resultClass="java.lang.String"  parameterClass="java.util.Map" >
+  <![CDATA[ 
+     SELECT B.TASKNAME FROM SCH_SCHDULECONTROL A,SCH_TASKINFO B WHERE A.TASKID = B.TASKID  and a.taskid=#taskid#  and A.BATCHDATE=#batchdate#
+     ]]>
+  </select>
+  
+  <!--任务运行作业列表list  -->
+   <select id="getJobList" resultClass="java.util.LinkedHashMap"  parameterClass="java.util.Map" >
+   <![CDATA[ 
+      SELECT A.TASKID,C.TASKNAME,A.BATCHDATE,B.JOBID,B.DESCRIBE,B.JOBTYPE,A.STATUS,B.CONCURRENT ,to_char(A.STARTTIME,'yyyy-MM-dd HH24:mi:ss') STARTTIME, to_char(A.ENDTIME ,'yyyy-MM-dd HH24:mi:ss') ENDTIME,A.ERRMSG ,
+	FLOOR((A.ENDTIME - A.STARTTIME) * 60 * 24) RUNMINUE, cast(((A.ENDTIME - A.STARTTIME) * 60 * 24 - FLOOR((A.ENDTIME - A.STARTTIME) * 60 * 24)) * 60 as varchar2(2)) as RUNSECOND
+	 FROM SCH_TASKSTATUS A ,SCH_JOBCONFIG B, SCH_TASKINFO C   WHERE A.TASKID = B.TASKID AND A.JOBID = B.JOBID 
+ AND A.TASKID = C.TASKID   AND A.TASKID=#taskId#  AND A.BATCHDATE=#batchdate#  AND B.JOBID like #jobNo#  AND A.STATUS like #runstatus#  and B.JOBTYPE like #jobType#  ORDER BY  DECODE(A.STATUS,'1','1','3','2','2','3','5','3','0','4','9'), A.STARTTIME DESC 
+      ]]>
+    </select> 
+    
+    <!--任务运行监控列表list  -->
+    <select id="getRunModeTaskList" resultClass="java.util.LinkedHashMap"  parameterClass="java.util.Map" >
+    <![CDATA[ 
+    SELECT A.TASKID, B.TASKNAME, B.DESCRIBE, A.BATCHDATE,A.RUNMODE,A.STATUS,to_char(A.STARTTIME,'yyyy-MM-dd HH24:mi:ss') STARTTIME, to_char(A.ENDTIME ,'yyyy-MM-dd HH24:mi:ss') ENDTIME,
+       CASE  WHEN A.STATUS = 0 THEN 0 ELSE(SELECT COUNT(*) FROM SCH_TASKSTATUS TA WHERE A.TASKID = TA.TASKID  AND A.BATCHDATE = TA.BATCHDATE) END AS SUMTASK, 
+       CASE  WHEN A.STATUS = 0 THEN 0 ELSE (SELECT COUNT(*) FROM SCH_TASKSTATUS TB  WHERE A.TASKID = TB.TASKID AND A.BATCHDATE = TB.BATCHDATE AND TB.STATUS IN ('2', '5')) END AS SUNTASK, 
+      A.ERRMSG,  A.INTERRUPTED,  FLOOR((A.ENDTIME - A.STARTTIME) * 60 * 24) RUNMINUE,  CAST(((A.ENDTIME - A.STARTTIME) * 60 * 24 - FLOOR((A.ENDTIME - A.STARTTIME) * 60 * 24)) * 60 AS VARCHAR2(2)) AS RUNSECOND 
+      FROM SCH_SCHDULECONTROL A, SCH_TASKINFO B WHERE A.TASKID = B.TASKID  AND A.TASKID  LIKE '%$taskId$%'  AND A.BATCHDATE  like '%$batchdate$%'  AND A.RUNMODE  like '%$runMode$%'  AND B.TASKNAME like  '%$taskName$%' AND A.STATUS  like '%$status$%'  ORDER BY TASKID, BATCHDATE
+     ]]>
+    </select>
+    
+    <!--任务运行控制管理列表list  -->
+        <select id="getTaskRunList" resultClass="java.util.LinkedHashMap"  parameterClass="java.util.Map" >
+    <![CDATA[ 
+   SELECT A.TASKID,
+       A.STARTPOINTJOBS,
+       B.TASKNAME,
+       B.DESCRIBE,
+       A.BATCHDATE,
+       A.RUNMODE,
+       A.STATUS,
+       to_char(A.STARTTIME,'yyyy-MM-dd HH24:mi:ss') STARTTIME, 
+       to_char(A.ENDTIME ,'yyyy-MM-dd HH24:mi:ss') ENDTIME,
+       NVL(C.SUMTASK, '0') SUMTASK,
+       NVL(D.SUNTASK, '0') SUNTASK,
+       A.ERRMSG,
+       A.INTERRUPTED
+  FROM SCH_SCHDULECONTROL A,
+       SCH_TASKINFO B,
+       (SELECT C.TASKID, COUNT(C.TASKID) SUMTASK
+          FROM SCH_TASKSTATUS C, SCH_SCHDULECONTROL D
+         WHERE C.TASKID = D.TASKID
+         GROUP BY C.TASKID) C,
+       (SELECT C.TASKID, COUNT(C.TASKID) SUNTASK
+          FROM SCH_TASKSTATUS C, SCH_SCHDULECONTROL D
+         WHERE C.TASKID = D.TASKID
+           AND C.STATUS = '2'
+         GROUP BY C.TASKID) D
+ WHERE A.TASKID = B.TASKID
+   AND A.TASKID = C.TASKID(+)
+   AND A.TASKID = D.TASKID(+)
+   AND A.TASKID LIKE '%$taskId$%'
+   AND A.BATCHDATE LIKE '%$batchdate$%'
+   AND A.RUNMODE LIKE '%$runmode$%'
+   AND B.TASKNAME LIKE '%$taskName$%'
+   AND A.STATUS LIKE '%$status$%'
+ ORDER BY A.STARTTIME DESC
+     ]]>
+    </select>
+    <!--批量插入调度任务控制  -->
+    <insert id="insertBatchScheduleControl"   parameterClass="java.util.Map" >
+      insert  into  SCH_SCHDULECONTROL(TASKID, BATCHDATE, RUNMODE, STATUS,startpointjobs) VALUES(#taskId#, #batchdate#, #runmode#, #status#,#startpointjobs#) 
+    </insert>
+    <!-- 判断任务在某些批量日期是否在运行 -->
+     <select id="getRunTaskListFlag" resultClass="java.lang.String"  parameterClass="java.util.Map" >
+      <![CDATA[ 
+        SELECT COUNT(1) FROM SCH_SCHDULECONTROL T WHERE T.TASKID=#taskNo#  AND T.BATCHDATE $batchdate$ AND T.STATUS='1'
+      ]]>
+    </select>
+    
+    <delete id="deletetaskFound" parameterClass="java.util.Map">
+       DELETE SCH_SCHDULECONTROL WHERE TASKID =#taskid# AND BATCHDATE =#batchdate# AND STATUS = #status# AND RUNMODE = #runmode#
+    </delete>
+    
+    <update id="updateAfreshTaskFound" parameterClass="java.util.Map">
+        UPDATE SCH_SCHDULECONTROL SET RUNMODE =#newRunmode#, STATUS =#newStatus#,STARTTIME='',ENDTIME='',ERRMSG='',BATCHNO='',INTERRUPTED=''   WHERE TASKID =#taskid# AND BATCHDATE =#batchdate# AND STATUS =#status# AND RUNMODE =#runmode#
+    </update>
+     <update id="updateBlockTaskFound" parameterClass="java.util.Map">
+        UPDATE SCH_SCHDULECONTROL SET RUNMODE = #newRunmode#, STATUS =#newStatus#,INTERRUPTED = #newinterrupted#   WHERE TASKID =#taskid# AND BATCHDATE =#batchdate# AND STATUS =#status# AND RUNMODE =#runmode#
+     </update>
+     
+     <update id="ignoreDependTaskJobs" parameterClass="java.util.Map">
+        update SCH_TASKSTATUS s set s.status='5'  where s.taskid=#taskid# and s.jobid = (SELECT t.jobid FROM sch_jobdependences t WHERE T.TASKID=#taskid# START WITH t.dependentjobid  = #jobid# CONNECT BY PRIOR t.jobid  = t.dependentjobid)
+     </update>
+     
+     <update id="ignoreTaskJobs" parameterClass="java.util.Map">
+        update SCH_TASKSTATUS s set s.status = '5' where jobid=#jobid# and taskid=#taskid#
+     </update>
+     <!--任务作业列表-->
+     <select id="getTaskJobConfigList" resultClass="java.util.LinkedHashMap"  parameterClass="java.util.Map" >
+       <![CDATA[  
+        SELECT T.TASKID,B.TASKNAME,T.JOBID,T.JOBTYPE,T.DESCRIBE,T.JOBCONTENT,T.FIXPARAM,T.CONCURRENT,T.ATTACHPARAM , T.ISSCANJOB, T.SCANDURATION,T.PRIORITY,T.STATE FROM SCH_JOBCONFIG T,SCH_TASKINFO B WHERE T.TASKID=B.TASKID AND T.TASKID = #taskId# AND T.JOBID  like '%$jobId$%'  ORDER BY T.JOBID
+      ]]>
+    </select> 
+     <select id="getAfterJobId" resultClass="java.lang.String"  parameterClass="com.vanceinfo.schedule.framework.newJobInfo.service.NewJobInfoBean" >
+  <![CDATA[ 
+     SELECT JOBID  FROM SCH_JOBDEPENDENCES A  WHERE A.TASKID =#taskId#  AND A.DEPENDENTJOBID = #jobId# AND ROWNUM<=1 
+       ]]>
+    </select>
+    <select id="getJobConfigBean" resultClass="java.lang.String"  parameterClass="com.vanceinfo.schedule.framework.newJobInfo.service.NewJobInfoBean" >
+  <![CDATA[ 
+     SELECT  COUNT(1) FROM SCH_JOBCONFIG T  WHERE T.TASKID = #taskId# AND T.JOBID  = #jobId#  
+       ]]>
+    </select>
+    <insert id="insertJobConfigControl"   parameterClass="com.vanceinfo.schedule.framework.newJobInfo.service.NewJobInfoBean" >
+      INSERT INTO SCH_JOBCONFIG (TASKID, JOBID, JOBTYPE, DESCRIBE, JOBCONTENT, FIXPARAM, CONCURRENT, ATTACHPARAM ,ISSCANJOB,SCANDURATION,PRIORITY,STATE)
+     VALUES(#taskId#, #jobId#, #jobType#, #describe#, #jobContent#, #fixParam#, #concurrent#, #attachParam#, #isScanJob#, #scanDuration#,#priority#,#state#)
+     </insert>
+     
+    <insert id="insertJobDependences"   parameterClass="java.util.Map" >
+     INSERT INTO SCH_JOBDEPENDENCES (TASKID, JOBID, DEPENDENTJOBID) VALUES(#taskId#, #jobId#, #dependentJobId#) 
+      </insert>
+     <update id="updateJobConfigControl" parameterClass="com.vanceinfo.schedule.framework.newJobInfo.service.NewJobInfoBean">
+      UPDATE SCH_JOBCONFIG SET JOBTYPE = #jobType#,DESCRIBE = #describe#,JOBCONTENT = #jobContent#,FIXPARAM = #fixParam#,CONCURRENT = #concurrent#,ATTACHPARAM = #attachParam#,
+      ISSCANJOB=#isScanJob#,SCANDURATION=#scanDuration# ,PRIORITY=#priority#,STATE=#state# WHERE TASKID = #taskId# AND JOBID = #jobId# 
+     </update>
+     <delete id="deleteJobConfig" parameterClass="com.vanceinfo.schedule.framework.newJobInfo.service.NewJobInfoBean">
+       DELETE SCH_JOBCONFIG WHERE TASKID = #taskId# AND JOBID = #jobId#
+    </delete>   
+    <delete id="deleteJobDependencesJob" parameterClass="com.vanceinfo.schedule.framework.newJobInfo.service.NewJobInfoBean">
+       delete FROM SCH_JOBDEPENDENCES A WHERE A.TASKID = #taskId# AND A.JOBID=#jobId# 
+    </delete>  
+    
+     <select id="getDependencesJobInfo" resultClass="java.util.LinkedHashMap"  parameterClass="java.util.Map" >
+  <![CDATA[ 
+    SELECT A.TASKID, A.JOBID, A.DESCRIBE, A.JOBTYPE, A.STATE
+  FROM SCH_JOBCONFIG A
+ WHERE A.JOBID <> #jobId#
+   AND A.TASKID = #taskId#
+   AND A.JOBID NOT IN (SELECT DISTINCT JOBID
+                         FROM SCH_JOBDEPENDENCES T
+                        START WITH T.TASKID = #taskId#
+                               AND T.JOBID = #jobId#
+                       CONNECT BY PRIOR JOBID = DEPENDENTJOBID
+                       UNION
+                       SELECT DISTINCT DEPENDENTJOBID
+                         FROM SCH_JOBDEPENDENCES T
+                       CONNECT BY PRIOR DEPENDENTJOBID = JOBID
+                        START WITH T.TASKID =#taskId#
+                               AND T.DEPENDENTJOBID = #jobId#)
+     AND A.JOBID LIKE '%$sunJobNo$%'
+       ]]>
+    </select>
+    <insert id="insertBatchDependentJob"   parameterClass="java.util.Map" >
+    INSERT INTO SCH_JOBDEPENDENCES (TASKID, JOBID, DEPENDENTJOBID) VALUES(#taskId#, #jobId#, #dependentJobId#)
+     </insert>
+</sqlMap>

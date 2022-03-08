@@ -1,0 +1,310 @@
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}.whitetext {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #FFFFFF;
+	text-decoration: none;
+}
+a.white:link {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #FFFFFF;
+	text-decoration: underline;
+}
+a.white:visited {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #FFFFFF;
+	text-decoration: underline;
+}
+a.white:hover {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #FFFFFF;
+	text-decoration: none;
+}
+a.white:active {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #FFFFFF;
+	text-decoration: underline;
+}
+a.blink:link {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #666666;
+	text-decoration: underline;
+}
+a.blink:visited {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #666666;
+	text-decoration: underline;
+}
+a.blink:hover {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #bd0021;
+	text-decoration: none;
+}
+a.blink:active {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #666666;
+	text-decoration: underline;
+}
+a.bluelink:link {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #0066FF;
+	text-decoration: underline;
+}
+a.bluelink:visited {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #0066FF;
+	text-decoration: underline;
+}
+a.bluelink:hover {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #bd0021;
+	text-decoration: none;
+}
+a.bluelink:active {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #0066FF;
+	text-decoration: underline;
+}
+a.tlink:link {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #666666;
+	text-decoration: none;
+}
+a.tlink:visited {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #666666;
+	text-decoration: none;
+}
+a.tlink:hover {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #666666;
+	text-decoration: none;
+}
+a.tlink:active {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #666666;
+	text-decoration: none;
+}
+.contentName {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: bold;
+	font-variant: normal;
+	text-transform: none;
+	color: #666666;
+	text-decoration: none;
+}
+.content {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #666666;
+	text-decoration: none;
+}
+.contentblue {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: 20px;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #0066FF;
+	text-decoration: none;
+}
+.selectbox {
+	font-family: "宋体";
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #666666;
+	text-decoration: none;
+	background-color: #FFFFFF;
+	border: 1px solid #999999;
+}
+.button{
+	FONT-SIZE: 12px;
+	CURSOR: hand;
+	COLOR: #666666;
+	background-image: url(../images/button2.gif);
+	border: 1px solid #b5b7b8;
+	height: 20px;
+	font-family: "宋体";
+	text-decoration: none;
+	padding-right: 5px;
+	padding-left: 5px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+.buttonred{
+	FONT-SIZE: 12px;
+	CURSOR: hand;
+	COLOR: #91000B;
+	background-image: url(../images/button2red.gif);
+	border: 1px solid #d3313e;
+	height: 20px;
+	font-family: "宋体";
+	text-decoration: none;
+	padding-right: 5px;
+	padding-left: 5px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+.sbutton{
+	FONT-SIZE: 12px;
+	CURSOR: hand;
+	COLOR: #666666;
+	background-image: url(../images/button1.gif);
+	border: 1px solid #b5b7b8;
+	height: 16px;
+	font-family: "宋体";
+	text-decoration: none;
+	line-height: 16px;
+	vertical-align: baseline;
+	text-align: center;
+	padding-right: 3px;
+	padding-left: 3px;
+}
+.sbuttonred{
+	FONT-SIZE: 12px;
+	CURSOR: hand;
+	COLOR: be000f;
+	background-image: url(../images/button1red.gif);
+	border: 1px solid #d3313e;
+	height: 16px;
+	font-family: "宋体";
+	text-decoration: none;
+	line-height: 16px;
+	vertical-align: baseline;
+	text-align: center;
+	padding-right: 3px;
+	padding-left: 3px;
+}
+.divbox {
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-style: none;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #BD0021;
+	border-right-color: #BD0021;
+	border-bottom-color: #BD0021;
+	border-left-color: #BD0021;
+}

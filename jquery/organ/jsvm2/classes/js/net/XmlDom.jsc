@@ -1,0 +1,424 @@
+# language: JSVM2
+
+/**
+ * @fileoverview js.net.XmlDom class {@link http://jsvm.homolo.com/}
+ * @file		XmlDom.jsc
+ * @author	DSONET, Wan Changhua
+ * @version	2.01, 10/23/05
+ * @since		JSVM2.0
+ */
+ 
+
+package js.net;
+
+import js.lang.NotSupportException;
+import js.lang.System;
+
+/**
+ * Create a new XmlDom instance.
+ * Inherit from JObject
+ * @author	DSONET, Wan Changhua
+ * @version	2.01, 10/23/05
+ * @extends JObject
+ * @class This is the xmldom utility class.
+ * @constructor
+ * @throws NotSupportException if current browser does not support XMLDOM/document.implementation.createDocument().
+ * @return  a <code>Document</code> by document.implementation.createDocument() if the current browser is moz.
+ *          a <code>Microsoft.XMLDOM</code> instance otherwise.
+ */
+class XmlDom()
+{
+	if (js.lang.System.isMozBrowser())
+	{
+			var doc = document.implementation.createDocument("", "", null);
+			// some versions of Moz do not support the readyState property
+			// and the onreadystate event so we patch it!
+			if (doc.readyState == null)
+			{
+				doc.readyState = 1;
+				doc.addEventListener("load", function () {
+					doc.readyState = 4;
+					if (typeof doc.onreadystatechange == "function")
+					{
+						doc.onreadystatechange();
+					}
+				}, false);
+			}
+
+			return doc;
+	}
+	else
+	{
+		if (progId != null)
+		{
+			return new ActiveXObject(progId);
+		}
+		for (var i = 0; i < progIds.length; i++)
+		{
+			try
+			{
+				var obj = new ActiveXObject(progIds[i]);
+				progId = progIds[i];
+				return obj;
+			}
+			catch (ex) { }
+		}
+	}
+	throw new js.lang.NotSupportException(
+		"Can't create XmlDom object under '"
+		+ System.getPlatform()	+ "'!");
+}
+
+
+/**
+ * Retrieves a new XmlDom instance.
+ * @returns  a <code>Microsoft.XMLDOM</code> instance if the current browser is ie5.
+ *          a <code>XmlDom</code> instance otherwise.
+ * @type XmlHttp
+ */
+XmlDom.create = function ()
+{
+	return (System.getPlatform() == "ie5") ?
+		new ActiveXObject("Microsoft.XMLDOM") : new XmlDom();
+}
+
+
+/**
+ * @private
+ */
+var progIds = ["MSXML2.DOMDocument", "Microsoft.XMLDOM", "MSXML.DOMDocument", "MSXML3.DOMDocument"];
+
+/**
+ * @private
+ */
+var progId = null;
+
+
+if (js.lang.System.isMozBrowser() && 
+	window.DOMParser &&	
+	window.XMLSerializer &&
+	window.Node)
+{
+
+	// TODO
+	// XmlDom did not extend the Document interface in some versions
+	// of Mozilla. Extend both!
+	/**
+	 * @ignore
+	 */
+	XmlDom.prototype.loadXML =
+		Document.prototype.loadXML = function (s)
+	{
+		// parse the string to a new doc
+		var doc2 = (new DOMParser()).parseFromString(s, "text/xml");
+		// remove all initial children
+		while (this.hasChildNodes())
+		{
+			this.removeChild(this.lastChild);
+		}
+		// insert and import nodes
+		for (var i = 0; i < doc2.childNodes.length; i++)
+		{
+			this.appendChild(this.importNode(doc2.childNodes[i], true));
+		}
+		try
+		{
+			doc2.childNodes[0].xml;
+			return true;
+		}
+		catch (ex)
+		{
+			return false;
+		}
+	};
+
+	/*
+	 * xml getter
+	 *
+	 * This serializes the DOM tree to an XML String
+	 *
+	 * Usage: var sXml = oNode.xml
+	 *
+	 */
+
+	/**
+	 * XmlDom did not extend the Document interface in some versions
+	 * of Mozilla. Extend both!
+	 * @ignore
+	 */
+	XmlDom.prototype.__defineGetter__("xml", function ()
+		{
+			return "<?xml version=\"1.0\"?>" 
+				+ (new XMLSerializer()).serializeToString(this);
+		});
+
+	/**
+	 * @ignore
+	 */
+	Document.prototype.__defineGetter__("xml", function ()
+		{
+			return "<?xml version=\"1.0\"?>" 
+				+ (new XMLSerializer()).serializeToString(this);
+		});
+
+	/**
+	 * @ignore
+	 */
+	XmlDom.prototype.createNode = function (stype, name, ns)
+	{
+        switch (stype)
+        {
+            case 1 :
+                return (ns == null || ns == "") ? this.createElement(name)
+                	: this.createElementNS(ns, name);
+            case 2 :
+            		return (ns == null || ns == "") ? this.createAttribute(name)
+                	: this.createAttributeNS(ns, name);
+            case 3 :
+            default :
+                return this.createTextNode("");
+        }
+   }
+
+	/**
+	 * @ignore
+	 */
+  XmlDom.prototype.__realLoad = XmlDom.prototype.load;
+  
+  /**
+	 * @ignore
+	 */
+  XmlDom.prototype.load = function(uri)
+  {
+      this.readyState = 0;
+      this.__realLoad(uri);
+  }
+
+	/**
+	 * @ignore
+	 */
+  XmlDom.prototype.__defineSetter__("onreadystatechange", function (f)
+		{
+			if (this._onreadystatechange)
+			{
+				this.removeEventListener("load",this._onreadystatechange,false);
+			}
+			this._onreadystatechange = f;
+			if (f)
+			{
+          this.addEventListener("load", f, false);
+      }
+      return f;
+		});
+
+	/**
+	 * @ignore
+	 */
+  XmlDom.prototype.__defineGetter__("onreadystatechange", function ()
+  	{
+			return this._onreadystatechange;
+		});
+
+	/**
+	 * @ignore
+	 */
+  XmlDom._mozHasParseError = function (oDoc)
+  {
+      return (!oDoc.documentElement) ||
+      	oDoc.documentElement.localName == "parsererror"
+      		&& oDoc.documentElement.getAttribute("xmlns") ==
+      			"http://www.mozilla.org/newlayout/xml/parsererror.xml";
+  }
+
+	/**
+	 * @ignore
+	 */
+  XmlDom.prototype.__defineGetter__("parseError", function ()
+  	{
+			var hasError = XmlDom._mozHasParseError(this);
+			var res = {errorCode:0, filepos:0, line:0, linepos:0, reason:"", srcText:"", url:""};
+			if (hasError)
+			{
+				res.errorCode= -1;
+				try
+				{
+					res.srcText = this.getElementsByTagName("sourcetext")[0].firstChild.data;
+					res.srcText = res.srcText.replace(/\n\-\^$/, "");
+				}
+				catch (ex)
+				{
+					res.srcText = "";
+				}
+				try
+				{
+					var s = this.documentElement.firstChild.data;
+					var re = /XML Parsing Error\:(.+)\nLocation\:(.+)\nLine Number(\d+)\,Column(\d+)/;
+					var a = re.exec(s);
+					res.reason = a[1];
+					res.url=a[2];
+					res.line=a[3];
+					res.linepos=a[4];
+				}
+				catch (ex)
+				{
+					res.reason = "uknown";
+				}
+			}
+			return res;
+		});
+
+	/**
+	 * @ignore
+	 */
+  Node.prototype.__defineGetter__("xml", function ()
+  	{
+			return(new XMLSerializer).serializeToString(this);
+		});
+
+	/**
+	 * @ignore
+	 */
+  Attr.prototype.__defineGetter__("xml", function ()
+  	{
+			var nv = (new XMLSerializer).serializeToString(this);
+			return this.nodeName + "=\""
+				+ nv.replace(/\"/g,"&quot;") + "\"";
+		});
+
+	/**
+	 * @ignore
+	 */
+  Node.prototype.__defineGetter__("baseName", function ()
+  	{
+			var lParts = this.nodeName.split(":");
+			return lParts[lParts.length - 1];
+		});
+
+	/**
+	 * @ignore
+	 */
+  Text.prototype.__defineGetter__("text", function ()
+		{
+			return this.nodeValue;
+		});
+
+	/**
+	 * @ignore
+	 */
+  Node.prototype.__defineGetter__("text", function ()
+  	{
+			var cs = this.childNodes;
+			var l = cs.length;
+			var sb = new Array(l);
+			for (var i = 0; i < l; i++)
+			{
+				sb[i] = cs[i].text;
+			}
+			return sb.join("");
+		});
+
+	/**
+	 * @ignore
+	 */
+  Node.prototype.selectNodes = function (sExpr)
+  {
+		var doc = (this.nodeType == 9) ? this : this.ownerDocument;
+		var nsRes = doc.createNSResolver(this.nodeType == 9 ? this.documentElement : this);
+		var nsRes2;
+		if (doc._selectionNamespaces)
+		{
+			nsRes2 = function(s){
+				return doc._selectionNamespaces[s] || nsRes.lookupNamespaceURI(s);
+			}
+		}
+		else
+		{
+			nsRes2 = nsRes;
+		}
+		var xpRes = doc.evaluate(sExpr, this, nsRes2, 5, null);
+		var res = [];
+		var item;
+		while (item = xpRes.iterateNext())
+		{
+			res.push(item);
+		}
+		return res;
+  }
+
+	/**
+	 * @ignore
+	 */
+  Node.prototype.selectSingleNode = function (sExpr)
+  {
+		var doc = (this.nodeType == 9) ? this : this.ownerDocument;
+		var nsRes = doc.createNSResolver((this.nodeType == 9) ? this.documentElement : this);
+		var nsRes2;
+		if (doc._selectionNamespaces)
+		{
+			nsRes2 = function (s)
+			{
+				return doc._selectionNamespaces[s] || nsRes.lookupNamespaceURI(s);
+			};
+		}
+		else
+		{
+			nsRes2 = nsRes;
+		}
+		var xpRes = doc.evaluate(sExpr, this, nsRes2, 9, null);
+		return xpRes.singleNodeValue;
+  }
+
+	/**
+	 * @ignore
+	 */
+  Node.prototype.transformNode = function (oXsltNode)
+  {
+		var doc = (this.nodeType == 9) ? this : this.ownerDocument;
+		var processor = new XSLTProcessor();
+		processor.importStylesheet(oXsltNode);
+		var df = processor.transformToFragment(this, doc);
+		return df.xml;
+  }
+
+	/**
+	 * @ignore
+	 */
+  Node.prototype.transformNodeToObject = function (oXsltNode, oOutputDocument)
+  {
+		var doc = (this.nodeType == 9) ? this : this.ownerDocument;
+		var outDoc = (oOutputDocument.nodeType == 9) ? oOutputDocument :
+			oOutputDocumentOutputDocument.ownerDocument;
+		var processor = new XSLTProcessor();
+		processor.importStylesheet(oXsltNode);
+		var df = processor.transformToFragment(this, doc);
+		while (oOutputDocument.hasChildNodes())
+		{
+			oOutputDocument.removeChild(oOutputDocument.lastChild);
+		}
+		var cs = df.childNodes;
+		var l = cs.length;
+		for(var i = 0; i < l; i++)
+		{
+			oOutputDocument.appendChild(outDoc.importNode(cs[i], true));
+		}
+  }
+
+	/**
+	 * @ignore
+	 */
+  XmlDom.prototype.setProperty = function(sName, sValue)
+  {
+		if (sName == "SelectionNamespaces")
+		{
+			this._selectionNamespaces = {};
+			var parts = sValue.split(/\s+/);
+			var re = /^xmlns\:([^=]+)\=((\"([^\"]*)\")|(\'([^\']*)\'))$/;
+			for ( var i = 0; i < parts.length; i++)
+			{
+				re.test(parts[i]);
+				this._selectionNamespaces[RegExp.$1] = RegExp.$4 || RegExp.$6;
+			}
+		}
+  }
+
+}

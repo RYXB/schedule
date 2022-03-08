@@ -1,0 +1,286 @@
+# language: jsvm2
+
+/**
+ * @fileoverview js.util.HashMap class {@link http://jsvm.homolo.com/}
+ * @file		HashMap.jsc
+ * @author	Wan Changhua
+ * @version	2.01, 10/23/05
+ * @since		JSVM1.0
+ */
+
+package js.util;
+
+import js.lang.JObject;
+import js.lang.Cloneable;
+import js.util.Iterator;
+
+
+/**
+ * Create a new HashMap instance.
+ * Inherit from Cloneable
+ * @author	Wan Changhua
+ * @version	2.01, 10/23/05
+ * @extends Cloneable
+ * @class This is the map class.
+ * @constructor
+ */
+class HashMap extends Cloneable ()
+{
+	/**
+	 * @private
+	 */
+	this.vos = {};
+}
+
+
+
+/**
+ * Returns an iterator of the values in this hashmap.
+ * Use the Iterator methods on the returned object to fetch the elements
+ * sequentially.
+ *
+ * @return  an iterator of the values in this hashmap.
+ * @type Iterator
+ */
+HashMap.prototype.elements = function()
+{
+	var a = [], i = 0;
+	for(var key in this.vos)
+	{
+		a[i++] = this.vos[key];
+	}
+	return new Iterator(a);
+}
+
+
+
+/**
+ * Returns the value to which the specified key is mapped in this idEntry
+ * hash map, or <tt>null</tt> if the map contains no mapping for this key.
+ * A return value of <tt>null</tt> does not <i>necessarily</i> indicate
+ * that the map contains no mapping for the key; it is also possible that
+ * the map explicitly maps the key to <tt>null</tt>. The
+ * <tt>containsKey</tt> method may be used to distinguish these two cases.
+ *
+ * @param   key the key whose associated value is to be returned.
+ * @return  the value to which this map maps the specified key, or
+ *          <tt>null</tt> if the map contains no mapping for this key.
+ * @type Object
+ */
+HashMap.prototype.get = function(key)
+{
+	return this.vos[key];
+}
+
+
+/**
+ * Returns <tt>true</tt> if this map contains no key-value mappings.
+ *
+ * @return <tt>true</tt> if this map contains no key-value mappings.
+ * @type boolean
+ */
+HashMap.prototype.isEmpty = function()
+{
+	return(this.size() == 0);
+}
+
+
+/**
+ * Returns an iterator of the keys in this hashmap.
+ *
+ * @return  an iterator of the keys in this hashmap.
+ * @type js.util.Iterator
+ */
+HashMap.prototype.keys = function()
+{
+	var a = [], i = 0;
+	for(var key in this.vos)
+	{
+		a[i++] = key;
+	}
+	return new Iterator(a);
+}
+
+
+/**
+ * Associates the specified value with the specified key in this map.
+ * If the map previously contained a mapping for this key, the old
+ * value is replaced.
+ * @param key key with which the specified value is to be associated.
+ * @param value value to be associated with the specified key.
+ * @return previous value associated with specified key, or <tt>null</tt>
+ *	       if there was no mapping for key.  A <tt>null</tt> return can
+ *	       also indicate that the HashMap previously associated
+ *	       <tt>null</tt> with the specified key.
+ */
+HashMap.prototype.put = function(key, value)
+{
+	var oldValue = this.vos[key];
+	this.vos[key] = value;
+	return oldValue;
+}
+
+
+ /**
+  * Removes the mapping for this key from this map if present.
+  *
+  * @param  key key whose mapping is to be removed from the map.
+  * @return previous value associated with specified key, or <tt>null</tt>
+  *	       if there was no mapping for key.  A <tt>null</tt> return can
+  *	       also indicate that the map previously associated <tt>null</tt>
+  *	       with the specified key.
+  */
+HashMap.prototype.remove = function(key)
+{
+	var value = this.vos[key];
+	delete this.vos[key];
+	return value;
+}
+
+
+/**
+ * Returns the number of key-value mappings in this map.
+ *
+ * @return the number of key-value mappings in this map.
+ * @type int
+ */
+HashMap.prototype.size = function()
+{
+	var l = 0;
+	for(var key in this.vos)
+	{
+		l++;
+	}
+	return l;
+}
+
+/**
+ * Removes all mappings from this map.
+ */
+HashMap.prototype.clear = function()
+{
+	this.vos = {};
+}
+
+
+/**
+ * Returns <tt>true</tt> if this map maps one or more keys to the
+ * specified value.
+ *
+ * @param value value whose presence in this map is to be tested.
+ * @return <tt>true</tt> if this map maps one or more keys to the
+ *         specified value.
+ * @type boolean
+ */
+HashMap.prototype.containsValue = function(value)
+{
+	for(var key in this.vos)
+	{
+		if (this.vos[key] == value)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Returns <tt>true</tt> if this map contains a mapping for the
+ * specified key.
+ *
+ * @param   key   The key whose presence in this map is to be tested
+ * @return <tt>true</tt> if this map contains a mapping for the specified key.
+ * @type boolean
+ */
+HashMap.prototype.containsKey = function(key)
+{
+	for(var k in this.vos)
+	{
+		if (k == key)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Returns an array containing all of the elements in this list
+ * in the correct order.
+ *
+ * @return an array containing all of the elements in this list
+ * 	       in the correct order.
+ * @type Array
+ */
+HashMap.prototype.toArray = function ()
+{
+	var entities = [];
+	for(var key in this.vos)
+	{
+		entities[i] = new Entry(key, this.vos[key]);
+	}
+	return entities;
+}
+
+/**
+ * Returns a shallow copy of this <tt>HashMap</tt> instance: the keys and
+ * values themselves are not cloned.
+ *
+ * @return a shallow copy of this map.
+ * @type HashMap
+ */
+HashMap.prototype.clone = function ()
+{
+	var map = new HashMap();
+	map.vos = Cloneable.cloneObject(this.vos);
+	return map;
+}
+
+
+/**
+  * A map entry (key-value pair). 
+  * @since 1.2
+  * @member HashMap
+  * @ignore
+  */
+var Entry = js.util.HashMap.Entry 
+	= function (k, v)
+{
+	this.key = k;
+	this.value = v;
+}
+
+/**
+ * @ignore
+ */
+Entry.$extends(js.lang.JObject);
+Entry.prototype.$class = Entry;
+Entry.$name = "js.util.HashMap.Entry";
+
+
+/**
+ * Returns the key corresponding to this entry.
+ * @type Object
+ */
+Entry.prototype.getKey = function ()
+{
+	return this.key;
+}
+
+/**
+ * Replaces the value corresponding to this entry with the specified value
+ * @param v <Object>
+ */
+Entry.prototype.setValue = function (v)
+{
+	this.value = v;
+}
+
+/**
+ * Returns the value corresponding to this entry.
+ * @type Object
+ */
+Entry.prototype.getValue = function ()
+{
+	return this.value;
+}

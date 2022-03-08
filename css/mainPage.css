@@ -1,0 +1,92 @@
+.panel_caption {	
+	FONT: bold 9pt Verdana,"宋体";	
+	OVERFLOW: hidden;	
+	WORD-BREAK: keep-all;	
+	WHITE-SPACE: nowrap;	
+	TEXT-OVERFLOW: ellipsis} 
+/* Rule 115 of /acctPolicy/resources/skins/blue/skin.css */ 
+.menubar {	
+	BORDER-RIGHT: #96d9f9 1px solid;	
+	PADDING-RIGHT: 1px;	
+	BORDER-TOP: #96d9f9 1px solid;	
+	PADDING-LEFT: 1px;	
+	FONT-SIZE: 9pt;	
+	BACKGROUND: url(menubar_bg.gif) #d9edf6 repeat-x 50% top;	
+	PADDING-BOTTOM: 1px;	
+	BORDER-LEFT: #96d9f9 1px solid;
+    CURSOR: default;	
+    PADDING-TOP: 1px;	
+    BORDER-BOTTOM: #96d9f9 1px solid} 
+/* Rule 116 of /acctPolicy/resources/skins/blue/skin.css */ 
+.menubar .menuitem {	
+	PADDING-RIGHT: 10px;	
+	PADDING-LEFT: 10px;	
+	PADDING-BOTTOM: 3px;	
+	PADDING-TOP: 3px;	
+	WHITE-SPACE: nowrap;	
+	BACKGROUND-COLOR: transparent}
+/* Rule 9 of /acctPolicy/styles/blue/default.css */ 
+  .label {	FONT: 9pt Verdana,"宋体"}
+.head_table {
+	BACKGROUND: url(main-head-bg.jpg) center center;
+	WIDTH: 100%;
+	HEIGHT: 100%
+}
+/* Rule 8 of /acctPolicy/styles/blue/default.css */
+.head_title {
+	FONT-SIZE: 20pt;
+	VERTICAL-ALIGN: top;
+	WIDTH: 100%;
+	PADDING-TOP: 5px;
+	TEXT-ALIGN: center
+}
+/* Rule 16 of /acctPolicy/resources/skins/blue/skin.css */
+.label {
+	FONT: 7pt Verdana, "宋体"
+} 
+ .head_button {	
+             VERTICAL-ALIGN: top;	
+             WIDTH: 100px
+             } 
+ /* Rule 12 of /acctPolicy/styles/blue/default.css */ 
+ UL.m_op {	
+              MARGIN: 0px;	
+              PADDING-TOP: 10px;	
+              HEIGHT: 4px;
+              } 
+  /* Rule 13 of /acctPolicy/styles/blue/default.css */ 
+ UL.m_op LI {	
+               PADDING-RIGHT: 10px;	
+               FLOAT: LEFT;	
+               LIST-STYLE-TYPE: none
+               } 
+  /* Rule 14 of /acctPolicy/styles/blue/default.css */ 
+   UL.m_op LI A {	
+           PADDING-RIGHT: 0px;	
+           DISPLAY: block;	
+           FONT-SIZE: 8pt; 
+           PADDING-LEFT: 20px;	
+           BACKGROUND-IMAGE: url(main-head_ico.gif);	
+           PADDING-BOTTOM: 0px;	
+           COLOR: #006699;	
+           BACKGROUND-REPEAT: no-repeat;	
+           TEXT-DECORATION: none
+           }
+ A.welcome{
+      FONT: 9pt Verdana,"宋体";
+      COLOR: #575757;		
+      TEXT-DECORATION: none
+   }
+/* Rule 14 of /acctPolicy/styles/blue/default.css */ 
+  A.m_op_lk_3 {	        
+        BACKGROUND-POSITION: 0px -65px
+        }
+ .commonTable{
+	WIDTH: 100%;
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+	text-align: center;
+	background-color: #FFFFFF;
+}
+.selector {font-family:"Microsoft YaHei",微软雅黑,"Microsoft JhengHei",华文细黑,STHeiti,MingLiu}

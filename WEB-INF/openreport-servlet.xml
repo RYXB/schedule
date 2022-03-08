@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
+		<property name="basename">
+			<value>views</value>
+		</property>
+		<property name="defaultParentView">
+			<value>jstlView</value>
+		</property>
+	</bean>
+
+	<!--
+		请求路径（URL）和
+		处理类的映射处理组件ta。此处使用的是BeanNameUrlHandlerMapping，即获取名称和"请求URL"一致的Controller组件，并使用之
+	-->
+	<bean id="defaultHandlerMapping"
+		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" />
+
+	<!--用于文件上传的Bean。即使系统不使用文件上传的话，保留此定义也不会有问题   -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+
+	<!--Message资源组件-->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<!--对应于Classpath下的message.properties文件-->
+		<property name="basename">
+			<value>message</value>
+		</property>
+	</bean>
+    
+    <!-- 用户登录界面 -->
+    <bean name="/login.op" class="com.vanceinfo.schedule.framework.login.controller.LoginPage" >
+        <property name="userLoginService"><ref bean="userLoginService" /> 
+		</property>
+    </bean>
+    
+	<bean name="/xloadTreeMenu.op"
+		class="com.vanceinfo.schedule.framework.util.TreeMenuController" />
+
+	<bean name="/taskMonitor.op"
+		class="com.vanceinfo.schedule.framework.taskMonitor.controller.TaskMonitorController">
+		<property name="taskMonitorService"><ref bean="taskMonitorService" />
+		</property>
+	</bean>
+	<bean name="/scheduleTaskDef.op" class="com.vanceinfo.schedule.framework.taskPlan.controller.ScheduleTaskDefController">
+	  <property name="formView"><value>scheduleTaskDef</value></property>
+	   <property name="successView"><value>scheduleTaskDef</value></property>
+	  </bean>
+	
+  
+	<bean name="/taskMonitorDetail.op" class="com.vanceinfo.schedule.framework.taskMonitor.controller.TaskMonitorDetailController">
+		<property name="taskMonitorService">
+			<ref bean="taskMonitorService" />
+		</property>  
+	</bean>
+	 
+	<!-- 忽略任务错误作业执行操作 -->
+	<bean name="/runJobDetail.op" class="com.vanceinfo.schedule.framework.taskFound.controller.RunJobDetailController"> 
+		<property name="taskFoundService">
+			<ref bean="taskFoundService" />
+		</property>
+	</bean>
+	 
+	<!-- 子作业查看 -->
+	<bean name="/concurrentController.op"
+		class="com.vanceinfo.schedule.framework.taskMonitor.controller.ConcurrentController">
+		<property name="taskMonitorService">
+			<ref bean="taskMonitorService" />
+		</property> 
+	</bean>  
+
+	<bean name="/hisTaskMonitor.op"
+		class="com.vanceinfo.schedule.framework.hisTaskMonitor.controller.HisTaskMonitorController">
+		<property name="formView">
+			<value>hisTaskMonitor</value>
+		</property>
+		<property name="successView">
+			<value>hisTaskMonitor</value>
+		</property>
+		<property name="hisTaskMonitorService">
+			<ref bean="hisTaskMonitorService" />
+		</property> 
+	</bean>
+	 
+
+	<!-- 历史作业查看 -->
+	<bean name="/hisTaskMonitorDetail.op"
+		class="com.vanceinfo.schedule.framework.hisTaskMonitor.controller.HisTaskMonitorDetailController">
+		<property name="hisTaskMonitorService">
+			<ref bean="hisTaskMonitorService" />
+		</property> 
+	</bean>
+	<!-- 历史子作业查看 -->
+	<bean name="/hisConcurrentController.op"
+		class="com.vanceinfo.schedule.framework.hisTaskMonitor.controller.HisConcurrentController">
+		<property name="hisTaskMonitorService">
+			<ref bean="hisTaskMonitorService" />
+		</property> 
+	</bean> 
+	<!--  任务创建  -->
+	<bean name="/taskFound.op"
+		class="com.vanceinfo.schedule.framework.taskFound.controller.TaskFoundController">
+		<property name="taskFoundService">
+			<ref bean="taskFoundService" />
+		</property>
+	</bean> 
+	
+	<bean name="/backController.op"
+		class="com.vanceinfo.schedule.framework.taskFound.controller.BackController">
+		<property name="taskFoundService">
+			<ref bean="taskFoundService" />
+		</property>
+	</bean>
+
+	<bean name="/blockingController.op"
+		class="com.vanceinfo.schedule.framework.taskFound.controller.BlockingController">
+		<property name="taskFoundService">
+			<ref bean="taskFoundService" />
+		</property>
+	</bean>
+
+	<bean name="/afreshController.op"
+		class="com.vanceinfo.schedule.framework.taskFound.controller.AfreshController">
+		<property name="taskFoundService">
+			<ref bean="taskFoundService" />
+		</property>
+	</bean>
+
+	<bean name="/deleteController.op"
+		class="com.vanceinfo.schedule.framework.taskFound.controller.DeleteController">
+		<property name="taskFoundService">
+			<ref bean="taskFoundService" />
+		</property>
+	</bean>
+
+	<bean name="/newTaskController.op"
+		class="com.vanceinfo.schedule.framework.newTaskInfo.controller.NewTaskController">
+		<property name="successView">
+			<value>newTaskController</value>
+		</property>
+		<property name="newTaskService">
+			<ref bean="newTaskService" />
+		</property>
+	</bean>
+	<bean name="/editTaskInfoController.op"
+		class="com.vanceinfo.schedule.framework.newTaskInfo.controller.EditTaskInfoController">
+		<property name="formView">
+			<value>newTaskController</value>
+		</property>
+		<property name="newTaskService">
+			<ref bean="newTaskService" />
+		</property>
+	</bean>
+
+	<bean name="/newJobInfoController.op"
+		class="com.vanceinfo.schedule.framework.newJobInfo.controller.NewJobInfoController">
+		<property name="successView">
+			<value>listJobInfoController</value>
+		</property>
+		<property name="formView">
+			<value>listJobInfoController</value>
+		</property>
+		<property name="newJobInfoService">
+			<ref bean="newJobInfoService" />
+		</property>
+	</bean> 
+
+	<bean name="/editJobInfoController.op"
+		class="com.vanceinfo.schedule.framework.newJobInfo.controller.EditJobInfoController">
+		<property name="successView">
+			<value>listJobInfoController</value>
+		</property>
+		<property name="formView">
+			<value>listJobInfoController</value>
+		</property>
+		<property name="newJobInfoService">
+			<ref bean="newJobInfoService" />
+		</property>
+	</bean>
+ 
+	<bean name="/getGeneralTreeView.op"
+		class="com.vanceinfo.schedule.framework.dependent.controller.GetGeneralTreeViewController">
+		<property name="successView">
+			<value>getGeneralTreeView</value>
+		</property>
+		<property name="treeBOByCode">
+			<ref bean="treeBOByCode" />
+		</property>
+	</bean>
+
+	<bean name="/getGeneralTreeSource.op"
+		class="com.vanceinfo.schedule.framework.dependent.controller.GetGeneralTreeSourceController">
+		<property name="successView">
+			<value>getGeneralTreeSource</value>
+		</property>
+		<property name="treeBOByCode">
+			<ref bean="treeBOByCode" />
+		</property>
+	</bean>
+
+	<bean name="/getGeneralTreeUpView.op"
+		class="com.vanceinfo.schedule.framework.dependent.controller.GetGeneralTreeUpViewController">
+		<property name="successView">
+			<value>getGeneralTreeUpView</value>
+		</property>
+		<property name="treeBOByCode">
+			<ref bean="treeBOByCode" />
+		</property>
+	</bean>
+
+	<bean name="/getGeneralTreeUpSource.op"
+		class="com.vanceinfo.schedule.framework.dependent.controller.GetGeneralTreeUpSourceController">
+		<property name="successView">
+			<value>getGeneralTreeUpSource</value>
+		</property>
+		<property name="treeBOByCode">
+			<ref bean="treeBOByCode" />
+		</property>
+	</bean>
+
+	<bean name="/frameTree.op"
+		class="com.vanceinfo.schedule.framework.dependent.controller.FrameTreeController">
+		<property name="successView">
+			<value>frameTree</value>
+		</property>
+	</bean>
+
+	<bean name="/dependencesJobInfoController.op"
+		class="com.vanceinfo.schedule.framework.newJobInfo.controller.DependencesJobInfoController">
+		<property name="successView">
+			<value>dependencesJobInfoController</value>
+		</property>
+		<property name="newJobInfoService">
+			<ref bean="newJobInfoService" />
+		</property>
+	</bean> 
+	<bean name="/unDependencesJobDataList.op"
+		class="com.vanceinfo.schedule.framework.newJobInfo.controller.UnDependencesJobDataList">  
+		<property name="newJobInfoService">
+			<ref bean="newJobInfoService" />
+		</property>
+	</bean> 
+	<bean name="/importInfoController.op"
+		class="com.vanceinfo.schedule.framework.dataImport.controller.ImportInfoController">
+		<property name="successView">
+			<value>importInfoController</value>
+		</property>
+		<property name="importInfoService">
+			<ref bean="importInfoService" />
+		</property>
+	</bean>
+
+	<bean name="/exportModelController.op"
+		class="com.vanceinfo.schedule.framework.dataImport.controller.ExportModelController">
+		<property name="importInfoService">
+			<ref bean="importInfoService" />
+		</property>
+	</bean>
+
+    <!-- 导出任务信息 -->
+    <bean name="/exportInfoController.op"
+		class="com.vanceinfo.schedule.framework.dataImport.controller.ExportInfoController">
+		<property name="importInfoService">
+			<ref bean="importInfoService" />
+		</property>
+	</bean>
+	
+	
+	<bean name="/eventController.op"
+		class="com.vanceinfo.schedule.framework.event.controller.EventController">
+		<property name="successView">
+			<value>eventController</value>
+		</property>
+		<property name="eventService">
+			<ref bean="eventService" />
+		</property>
+	</bean>
+
+	<bean name="/editEventController.op"
+		class="com.vanceinfo.schedule.framework.event.controller.EditEventController">
+		<property name="successView">
+			<value>eventController</value>
+		</property>
+		<property name="formView">
+			<value>eventController</value>
+		</property>
+		<property name="eventService">
+			<ref bean="eventService" />
+		</property>
+	</bean> 
+	<bean name="/eventSequenceController.op"
+		class="com.vanceinfo.schedule.framework.event.controller.EventSequenceController">
+		<property name="successView">
+			<value>eventSequenceController</value>
+		</property>
+		<property name="eventService">
+			<ref bean="eventService" />
+		</property>
+	</bean>
+
+	<bean name="/taskPlanController.op"
+		class="com.vanceinfo.schedule.framework.taskPlan.controller.TaskPlanController">
+		<property name="successView">
+			<value>taskPlanController</value>
+		</property>
+		<property name="taskPlanService">
+			<ref bean="taskPlanService" />
+		</property>
+	</bean>
+	
+	<bean name="/editTaskPlanController.op"
+		class="com.vanceinfo.schedule.framework.taskPlan.controller.EditTaskPlanController">
+		<property name="successView">
+			<value>taskPlanController</value>
+		</property>
+		<property name="formView">
+			<value>taskPlanController</value>
+		</property>
+		<property name="taskPlanService">
+			<ref bean="taskPlanService" />
+		</property>
+	</bean>
+	 
+	<bean name="/taskJobInfoListController.op"
+		class="com.vanceinfo.schedule.framework.taskFound.controller.TaskJobInfoListController">
+		<property name="taskFoundService">
+			<ref bean="taskFoundService" />
+		</property>
+	</bean>
+	 
+	 
+	<bean name="/exportFileController.op"
+		class="com.vanceinfo.schedule.framework.taskPlan.controller.ExportFileController">
+		<property name="taskPlanService">
+			<ref bean="taskPlanService" />
+		</property>
+	</bean> 
+	<bean name="/menuTreeView.op"
+		class="com.vanceinfo.schedule.framework.organ.controller.MenuTreeViewController">
+		<property name="successView">
+			<value>menuTreeView</value>
+		</property>
+		<property name="menuTreeService">
+			<ref bean="menuTreeService" />
+		</property>
+	</bean>
+
+    <bean name="/dataDownLoadControl.op" class="com.vanceinfo.schedule.framework.dataImport.controller.DataDownLoadController">
+	   <property name="successView"><value>logdownload</value></property>
+ 	 </bean>
+	  <bean name="/dataDownLoadDataList.op" class="com.vanceinfo.schedule.framework.dataImport.controller.DataDownLoadDataList">
+	   <property name="importInfoService"> <ref bean="importInfoService" /> </property>
+	  </bean>
+	  <bean name="/exportDataControl.op" class="com.vanceinfo.schedule.framework.dataImport.controller.ExportDateController">
+	     <property name="importInfoService"> <ref bean="importInfoService" /> </property>
+	  </bean>
+	<bean name="/menuTreeSource.op"
+		class="com.vanceinfo.schedule.framework.organ.controller.MenuTreeSourceController">
+		<property name="successView">
+			<value>menuTreeSource</value>
+		</property>
+		<property name="menuTreeService">
+			<ref bean="menuTreeService" />
+		</property>
+	</bean>
+	
+	<!-- 作业维护界面 -->
+	<bean name="/jobMaintain.op" class="com.vanceinfo.schedule.framework.taskFound.controller.JobMaintainController">
+	   <property name="successView"><value>jobMaintain</value></property>
+	   <property name="formView"><value>jobMaintain</value></property>
+	   <property name="taskFoundService"><ref bean="taskFoundService" /></property>
+	 </bean> 
+	  
+	 <bean name="/userController.op" class="com.vanceinfo.schedule.framework.login.controller.UserController">
+	    <property name="successView"><value>userController</value></property>
+	   <property name="formView"><value>userController</value></property> 
+	    <property name="userLoginService">
+			<ref bean="userLoginService" /> 
+		</property>
+	 </bean>
+	  
+	 
+	 <bean name="/editUserController.op" class="com.vanceinfo.schedule.framework.login.controller.EditUserController">
+	   <property name ="formView"><value>userController</value></property>
+	   <property name="successView"><value>userController</value></property>
+	   <property name="userLoginService"><ref bean="userLoginService" /></property>
+	 </bean>
+	 
+	   
+	  <bean name="/tabledataExport.op" class="com.vanceinfo.schedule.framework.dataExport.controller.TableDataExportController">
+	     <property name="formView"><value>dataListController</value></property>
+	     <property name="successView"><value>dataListController</value></property>
+	     <property name="tableDataExportService"><ref bean="tableDataExportService"/></property>
+	  </bean>
+	  <bean name="/getDbTableList.op" class="com.vanceinfo.schedule.framework.dataExport.controller.DbTableController">
+	     <property name="formView"><value>tabListController</value></property>
+	     <property name="successView"><value>tabListController</value></property>
+	     <property name="tableDataExportService"><ref bean="tableDataExportService"/></property>
+	  </bean>
+	  <bean name="/addTabledata.op" class="com.vanceinfo.schedule.framework.dataExport.controller.AddInfoController">
+	     <property name="formView"><value>dataSourceCon</value></property>
+	     <property name="successView"><value>dataSourceCon</value></property>
+	     <property name="tableDataExportService"><ref bean="tableDataExportService"/></property>
+	  </bean>
+	  <bean name="/connectTest.op" class="com.vanceinfo.schedule.framework.dataExport.controller.TestConnectionControl">
+	     <property name="tableDataExportService"><ref bean="tableDataExportService"/></property>
+	  </bean>
+	  
+	  <bean name="/updateSysTabInfo.op" class="com.vanceinfo.schedule.framework.dataExport.controller.UpdateSysTabInfoController">
+	     <property name="formView"><value>sysTabInfo</value></property>
+	     <property name="successView"><value>sysTabInfo</value></property>
+	     <property name="tableDataExportService"><ref bean="tableDataExportService"/></property>
+	  </bean>
+	  
+	  <bean name="/addSysTabInfo.op" class="com.vanceinfo.schedule.framework.dataExport.controller.AddSysTabInfoController">
+	     <property name="formView"><value>addsysTabInfo</value></property>
+	     <property name="successView"><value>addsysTabInfo</value></property>
+	     <property name="tableDataExportService"><ref bean="tableDataExportService"/></property>
+	  </bean>
+	  
+	  <bean name="/getDbScheamaList.op" class="com.vanceinfo.schedule.framework.dataExport.controller.GetSchemeListController">
+	     <property name="tableDataExportService"><ref bean="tableDataExportService"/></property>
+	  </bean>
+	  
+	   <bean name="/getScheamaTableList.op" class="com.vanceinfo.schedule.framework.dataExport.controller.GetSchemeTableListController">
+	     <property name="tableDataExportService"><ref bean="tableDataExportService"/></property>
+	  </bean>
+	  <bean name="/getScheamaTableColList.op" class="com.vanceinfo.schedule.framework.dataExport.controller.getTableColListController">
+	     <property name="tableDataExportService"><ref bean="tableDataExportService"/></property>
+	  </bean>
+	  <bean name="/deleteDb.op" class="com.vanceinfo.schedule.framework.dataExport.controller.DeleteDbController">
+	     <property name="formView"><value>dataListController</value></property>
+	     <property name="successView"><value>dataListController</value></property>
+	     <property name="tableDataExportService"><ref bean="tableDataExportService"/></property>
+	  </bean>
+	  <bean name="/deleteSysTabInfo.op" class="com.vanceinfo.schedule.framework.dataExport.controller.DeleteSysTabController">
+	     <property name="formView"><value>tabListController</value></property>
+	     <property name="successView"><value>tabListController</value></property>
+	     <property name="tableDataExportService"><ref bean="tableDataExportService"/></property>
+	  </bean>
+	  <bean name="/addDbTask.op" class="com.vanceinfo.schedule.framework.dataExport.controller.AddDbTaskController">
+	     <property name="formView"><value>dbTaskName</value></property>
+	     <property name="successView"><value>dbTaskName</value></property>
+	     <property name="tableDataExportService"><ref bean="tableDataExportService"/></property>
+	  </bean>
+	  <bean name="/tableuserView.op" class="com.vanceinfo.schedule.framework.table.controller.TableuseViewController">
+	    <property name="userLoginService"><ref bean="userLoginService" /> </property>
+	     <property name="formView"><value>tableView</value></property>
+	 </bean>
+</beans>

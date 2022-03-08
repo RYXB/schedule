@@ -1,0 +1,51 @@
+# language: JSVM2
+
+/**
+ * @fileoverview js.io.Cookie class {@link http://jsvm.homolo.com/}
+ * @file		Cookie.jsc
+ * @author	Wan Changhua
+ * @version	2.01, 10/23/05
+ * @since		JSVM2.0
+ */
+
+package js.io;
+
+import js.lang.BObject;
+
+/**
+ * Create a new Cookie instance.
+ * Inherit from BObject
+ * @author	Wan Changhua
+ * @version	2.01, 10/23/05
+ * @extends BObject
+ * @class this is a cookie utility class
+ * @constructor
+ * @return A new Cookie instance
+ * @see BObject js.lang.BObject is the base class for this
+ */
+class Cookie extends BObject ()
+{
+
+}
+
+/**
+ * Sets cookie
+ * @param {String} key the name of cookie item
+ * @param {String} value the value of cookie item
+ */
+Cookie.prototype.setValue = function (key, value)
+{
+	document.cookie = key + "=" + escape(value);
+}
+
+/**
+ * Returns cookie value with name.
+ * @return  a string
+ * @type String
+ */
+Cookie.prototype.getValue = function (key)
+{
+	return (new RegExp(" " + key + "=([^;]*)").test(
+		" " + document.cookie)) ?
+			unescape(RegExp.$1).split(",")[0] : null;
+}
